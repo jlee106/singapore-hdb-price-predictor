@@ -9,7 +9,7 @@ import requests
 
 @st.cache_resource
 def load_model_from_url():
-    url = "https://onedrive.live.com/download?resid=fe0b5dcf005fb24e/EcgHkNZDL91JtW7rgSpC_toBjZ7g605dO0fv41q-0SR8mQ"
+    url = "https://onedrive.live.com/download?resid=fe0b5dcf005fb24e!EcgHkNZDL91JtW7rgSpC_toBjZ7g605dO0fv41q-0SR8mQ"
     response = requests.get(url)
     with open("model.pkl", "wb") as f:
         f.write(response.content)
