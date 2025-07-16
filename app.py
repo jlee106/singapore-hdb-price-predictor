@@ -9,7 +9,7 @@ import requests
 
 @st.cache_resource
 def load_model_from_url():
-    url = "https://onedrive.live.com/download?resid=FE0B5DCF005FB24E!sd69007c82f4349ddb56eeb812a42feda"
+    url = "https://huggingface.co/jlee106/hdb-price-model/blob/main/random_forest_model.pkl"
     response = requests.get(url)
     with open("model.pkl", "wb") as f:
         f.write(response.content)
