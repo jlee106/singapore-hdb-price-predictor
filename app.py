@@ -53,10 +53,10 @@ hdb = pd.read_csv('./hdb_data_clean.csv')
 towns = hdb["town"].sort_values().unique().tolist()
 
 st.title("HDB Price Predictor")
-town = st.selectbox("Town", towns)
+select_town = st.selectbox("Town", towns)
 
 flat_types = hdb["flat_type"].sort_values().unique().tolist()
-flat_type = st.selectbox("Flat Type", flat_types)
+select_flat_type = st.selectbox("Flat Type", flat_types)
 
 mid_storey = st.slider("Storey", 1, 50, 8)
 floor_area_sqft = st.slider("Floor Area (sqft)", 300.00, 3100.00, 1022.58)
@@ -76,7 +76,7 @@ for town in towns:
 
 town_dict = dict(zip(towns_full, town_list))
 
-if town != "ANG MO KIO":
+if select_town != "ANG MO KIO":
     town_dict[f'town_{town}'] = True
 
 flat_types.pop(0)
@@ -93,7 +93,7 @@ for flat_type in flat_types:
 
 flat_types_dict = dict(zip(flat_types_full, flat_types_list))
 
-if flat_type != "1 ROOM":
+if select_flat_type != "1 ROOM":
     flat_types_dict[f'flat_type_{flat_type}'] = True
 
 mid_storey = {"mid_storey": mid_storey}
