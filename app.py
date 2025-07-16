@@ -77,7 +77,7 @@ for town in towns:
 town_dict = dict(zip(towns_full, town_list))
 
 if select_town != "ANG MO KIO":
-    town_dict[f'town_{town}'] = True
+    town_dict[f'town_{select_town}'] = True
 
 flat_types.pop(0)
 
@@ -94,7 +94,7 @@ for flat_type in flat_types:
 flat_types_dict = dict(zip(flat_types_full, flat_types_list))
 
 if select_flat_type != "1 ROOM":
-    flat_types_dict[f'flat_type_{flat_type}'] = True
+    flat_types_dict[f'flat_type_{select_flat_type}'] = True
 
 mid_storey = {"mid_storey": mid_storey}
 floor_area_sqft = {"floor_area_sqft": floor_area_sqft}
