@@ -9,7 +9,7 @@ import requests
 
 @st.cache_resource
 def load_model_from_url():
-    url = "https://1drv.ms/u/c/fe0b5dcf005fb24e/EcgHkNZDL91JtW7rgSpC_toBjZ7g605dO0fv41q-0SR8mQ?e=wJcOB4"
+    url = "https://1drv.ms/u/c/fe0b5dcf005fb24e/EcgHkNZDL91JtW7rgSpC_toBjZ7g605dO0fv41q-0SR8mQ?e=Mmjm12"
     response = requests.get(url)
     with open("model.pkl", "wb") as f:
         f.write(response.content)
