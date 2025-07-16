@@ -5,15 +5,26 @@ import streamlit as st
 import qrcode
 from io import BytesIO
 from sklearn.ensemble import RandomForestRegressor
+import requests
 
-APP_URL = "https://your‑app‑name.streamlit.app"
+@st.cache_resource
+def load_model_from_url():
+    url = "https://drive.google.com/uc?export=download&id=1d2fdEIT7gNgsLAiFoKgFf7Zo7ujDvJ73"
+    response = requests.get(url)
+    with open("model.pkl", "wb") as f:
+        f.write(response.content)
+    return joblib.load("model.pkl")
+
+rf = load_model_from_url()
+
+APP_URL = "https://hdb-price-predictor-team-2.streamlit.app"
 
 def make_qr(data: str):
     qr = qrcode.QRCode(
-        version=1,          # controls size; 1 is 21×21 “modules”
+        version=1,          
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=10,        # each module’s pixel size
-        border=2            # empty border modules
+        box_size=10,        
+        border=2           
     )
     qr.add_data(data)
     qr.make(fit=True)
@@ -36,8 +47,6 @@ st.download_button(
 )
 
 st.image(buf, caption=APP_URL, use_column_width=False)
-
-rf = joblib.load('./random_forest_model.pkl')
 
 hdb = pd.read_csv('./hdb_data_clean.csv')
 
