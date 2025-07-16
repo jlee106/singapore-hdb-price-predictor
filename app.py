@@ -6,6 +6,7 @@ import qrcode
 from io import BytesIO
 from sklearn.ensemble import RandomForestRegressor
 import requests
+import os
 
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"
@@ -40,6 +41,14 @@ def load_model_from_url():
     file_id = "1d2fdEIT7gNgsLAiFoKgFf7Zo7ujDvJ73"
     destination = "model.pkl"
     download_file_from_google_drive(file_id, destination)
+    
+    size = os.path.getsize(destination)
+    st.write(f"Downloaded model.pkl size: {size} bytes")
+    
+    with open(destination, "rb") as f:
+        start = f.read(100)
+    st.write(f"Start of file bytes: {start[:20]}")
+    
     return joblib.load(destination)
 
 rf = load_model_from_url()
@@ -85,7 +94,7 @@ flat_type = st.selectbox("Flat Type", flat_types)
 
 mid_storey = st.slider("Storey", 1, 50, 8)
 floor_area_sqft = st.slider("Floor Area (sqft)", 300.00, 3100.00, 1022.58)
-hdb_age = st.slider("Property Age", 2, 65, 29) #max 65 coz 1st hdb was built 1960
+hdb_age = st.slider("Property Age", 2, 65, 29)  # max 65 coz 1st hdb was built 1960
 total_dwelling_units = st.slider("Total Dwelling Units", 2, 570, 112)
 mrt_nearest_distance = st.slider("Nearest MRT Distance(m)", 0.00, 3600.00, 682.62)
 
