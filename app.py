@@ -46,7 +46,7 @@ st.download_button(
     mime="image/png"
 )
 
-st.image(buf, caption=APP_URL, use_column_width=False)
+st.image(buf, caption=APP_URL, use_container_width=False)
 
 hdb = pd.read_csv('./hdb_data_clean.csv')
 
