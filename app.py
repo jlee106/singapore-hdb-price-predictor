@@ -7,13 +7,40 @@ from io import BytesIO
 from sklearn.ensemble import RandomForestRegressor
 import requests
 
+def download_file_from_google_drive(id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': id}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {'id': id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    save_response_content(response, destination)
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:  # filter out keep-alive chunks
+                f.write(chunk)
+
 @st.cache_resource
 def load_model_from_url():
-    url = "https://drive.google.com/uc?export=download&id=1d2fdEIT7gNgsLAiFoKgFf7Zo7ujDvJ73"
-    response = requests.get(url)
-    with open("model.pkl", "wb") as f:
-        f.write(response.content)
-    return joblib.load("model.pkl")
+    file_id = "1d2fdEIT7gNgsLAiFoKgFf7Zo7ujDvJ73"
+    destination = "model.pkl"
+    download_file_from_google_drive(file_id, destination)
+    return joblib.load(destination)
 
 rf = load_model_from_url()
 
@@ -21,10 +48,10 @@ APP_URL = "https://hdb-price-predictor-team-2.streamlit.app"
 
 def make_qr(data: str):
     qr = qrcode.QRCode(
-        version=1,          
+        version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=10,        
-        border=2           
+        box_size=10,
+        border=2
     )
     qr.add_data(data)
     qr.make(fit=True)
@@ -33,11 +60,9 @@ def make_qr(data: str):
 
 qr_img = make_qr(APP_URL)
 
-
 buf = BytesIO()
 qr_img.save(buf, format="PNG")
 buf.seek(0)
-
 
 st.download_button(
     label="Download this QR code",
@@ -67,11 +92,11 @@ mrt_nearest_distance = st.slider("Nearest MRT Distance(m)", 0.00, 3600.00, 682.6
 towns.pop(0)
 towns_full = []
 
-for town in towns:
-    towns_full.append(f'town_{town}')
+for t in towns:
+    towns_full.append(f'town_{t}')
 
 town_list = []
-for town in towns:
+for t in towns:
     town_list.append(False)
 
 town_dict = dict(zip(towns_full, town_list))
@@ -83,12 +108,12 @@ flat_types.pop(0)
 
 flat_types_full = []
 
-for flat_type in flat_types:
-    flat_types_full.append(f'flat_type_{flat_type}')
+for ft in flat_types:
+    flat_types_full.append(f'flat_type_{ft}')
 
 flat_types_list = []
 
-for flat_type in flat_types:
+for ft in flat_types:
     flat_types_list.append(False)
 
 flat_types_dict = dict(zip(flat_types_full, flat_types_list))
@@ -104,7 +129,7 @@ mrt_nearest_distance = {"mrt_nearest_distance": mrt_nearest_distance}
 
 merged = mid_storey | floor_area_sqft | hdb_age | total_dwelling_units | mrt_nearest_distance | town_dict | flat_types_dict
 
-inputs = pd.DataFrame(merged, index = [0])
+inputs = pd.DataFrame(merged, index=[0])
 
 if st.button("predict"):
     predict = rf.predict(inputs)
