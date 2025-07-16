@@ -106,6 +106,6 @@ merged = mid_storey | floor_area_sqft | hdb_age | total_dwelling_units | mrt_nea
 
 inputs = pd.DataFrame(merged, index = [0])
 
-if st.button("predict"):
+if st.button("Predict"):
     predict = rf.predict(inputs)
     st.success(f'Predicted price: ${predict[0]:,.2f}')
