@@ -19,34 +19,6 @@ rf = load_model_from_url()
 
 APP_URL = "https://hdb-price-predictor-team-2.streamlit.app"
 
-def make_qr(data: str):
-    qr = qrcode.QRCode(
-        version=1,          
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=10,        
-        border=2           
-    )
-    qr.add_data(data)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    return img
-
-qr_img = make_qr(APP_URL)
-
-
-buf = BytesIO()
-qr_img.save(buf, format="PNG")
-buf.seek(0)
-
-
-st.download_button(
-    label="Download this QR code",
-    data=buf,
-    file_name="app_qrcode.png",
-    mime="image/png"
-)
-
-st.image(buf, caption=APP_URL, use_container_width=False)
 
 hdb = pd.read_csv('./hdb_data_clean.csv')
 
@@ -109,3 +81,33 @@ inputs = pd.DataFrame(merged, index = [0])
 if st.button("Predict"):
     predict = rf.predict(inputs)
     st.success(f'Predicted price: ${predict[0]:,.2f}')
+
+
+def make_qr(data: str):
+    qr = qrcode.QRCode(
+        version=1,          
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,        
+        border=2           
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    return img
+
+qr_img = make_qr(APP_URL)
+
+
+buf = BytesIO()
+qr_img.save(buf, format="PNG")
+buf.seek(0)
+
+
+st.download_button(
+    label="Download this QR code",
+    data=buf,
+    file_name="app_qrcode.png",
+    mime="image/png"
+)
+
+st.image(buf, caption=APP_URL, use_container_width=False)
